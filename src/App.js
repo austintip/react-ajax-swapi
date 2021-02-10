@@ -1,52 +1,88 @@
 import { useEffect, useState } from 'react'
 import './App.css';
+import { BrowserRouter, Switch, Route, Link } from 'react-router-dom'
 import StarshipPage from './StarshipPage'
 
 function App() {
-  const [ships, setShips] = useState([])
+  const [starships, setStarships] = useState([])
+
   let list
-  let shipsInfo
+
   useEffect(() => {
     fetch('https://swapi.dev/api/starships/')
-    .then(response => response.json())
-    .then(jsonData => {
-      setShips(Object.values(jsonData))
-      // console.log(jsonData)
-    }).catch(err =>{
-      console.log('api err?', err)
-    }
-    )
+      .then(response => response.json())
+      .then(jsonData => {
+        setStarships(jsonData.results)
+        // console.log(jsonData)
+      }).catch(err => {
+        console.log('api err?', err)
+      })
   }, [])
 
-  // console.log(ships[3])
-  if (ships.length > 0) {
-    list = ships[3].map((ship, i) => {
-      return(
-        <li className="ships-list" key={i}>
-          {ship.name}
-        </li>
-      )
-    })
+  if (starships.length > 0) {
+    list = starships.map((starship, i) =>
+      <Link
+        to={{
+          pathname: '/starship',
+          state: starships
+        }}
+        key={i}>
+        {starship.name}
+      </Link>
+    )
   }
-
-  if (ships.length > 0) {
-    shipsInfo = ships[3].map((ship, i) => {
-      return (
-        <StarshipPage key={i}
-        shipName={ship.name}
-        shipInfo={ship.model}
-        />
-      )
-    })
-  }
-
 
   return (
-    <div className="list-holder">
-      {list}
+    <div>
+      <BrowserRouter>
+        <Switch>
+          <Route path="/starship" render={({ location }) =>
+            <StarshipPage location={location}
+            starships={starships}
+            />
+          } />
+        </Switch>
+        <div className="list-holder">
+          <div className="ships-list">
+            {list}
+          </div>
+        </div>
+
+
+      </BrowserRouter>
     </div>
-  )
-};
+  );
+}
+// console.log(ships[3])
+
+
+
+//     let list = starships.map((starship, i) => {
+//       return(
+//         <li className="ships-list" key={i}>
+//           {starship.name}
+//         </li>
+//       )
+//     })
+
+
+//     let starshipsInfo = starships[3].map((starship, i) => {
+//       return (
+//         <StarshipPage key={i}
+//         starshipName={starship.name}
+//         starshipInfo={starship.model}
+//         />
+//       )
+//     })
+//   }
+
+
+//   return (
+//     <div className="list-holder">
+//       {list}
+//     </div>
+//   )
+// ;
 
 
 export default App;
