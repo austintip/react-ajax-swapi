@@ -24,7 +24,7 @@ function App() {
       <Link
         to={{
           pathname: '/starship',
-          state: starships
+          state: starship
         }}
         key={i}>
         {starship.name}
@@ -32,13 +32,13 @@ function App() {
     )
   }
 
+
   return (
     <div>
       <BrowserRouter>
         <Switch>
           <Route path="/starship" render={({ location }) =>
             <StarshipPage location={location}
-            starships={starships}
             />
           } />
         </Switch>
